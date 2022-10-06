@@ -1,0 +1,1132 @@
+				Angular
+.....................................................................................
+
+1.Typescript
+2.Angular
+3.Rxjs
+
+What is Typescript?
+  Typescript is programming language written on top of javascript.
+
+JS is dynamic typed,object based programming.
+dynamic typed means the type of variable we cant identify during compile time so that we cant build apps which are bigger one.
+Object based programming offers less oo concepts.
+
+What if i want strong typed ,object oriented  javascript?
+  typescript.
+
+Ts code cant be executed on browsers or any js runtime directly.
+ts code must be converted into js code.
+ts code only for dev.
+
+TS is built on ECMA-6/ES 6 
+
+TS  = {ES 6 features + extra features}
+
+setup project:
+
+			Setup Ts project
+
+Lab:
+
+Create Ts Project.
+How to write ts programs
+How to compile ts programs
+How to run compiled ts programs
+
+How to save file Name?
+
+fileName.ts
+ index.ts
+
+> mkdir ts-apps
+
+2.go to ts-apps folder
+
+
+>cd ts-apps
+
+ts-apps>
+
+3.create package.json file
+
+
+>ts-apps> npm init -y
+
+4.create src folder 
+
+>ts-apps>  mkdir src 
+
+5.install typescript compiler
+
+ npm install typescript --save-dev
+
+6.lanuch ide 
+ts-apps>  code .
+
+7.open package.json file and look inside scripts section and add this entry
+ "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile" : "tsc"
+  }
+
+9.tsconfig.json file  : used to configure compiler parameters
+{
+    "compilerOptions": {
+        "outDir": "build",
+        "watch": true,
+        "target": "ES6",
+        "noEmitOnError": true
+    },
+    "exclude": [
+        "node_modules"
+    ],
+    "files": [
+        "src/index.ts"
+    ]
+}
+
+
+10.test inside browser
+
+Create html file inside project dir
+
+ts-apps
+
+ -index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typescript-App</title>
+</head>
+<body>
+    <h1>Typescript app</h1>
+    <script src="src/index.ts"></script>
+</body>
+</html>
+
+Here we need to test whether it is working or not
+
+in order to test this , you need to install live server. which is embeded webserver for vs code.
+
+11.compile ts code 
+
+open cmd prompt and go to the project location
+
+>\ts-apps> npm run compile
+
+12.After compilation, you can see the folder in side project dir and file called index.js
+
+13. include that index.js inside index.html
+<body>
+    <h1>Typescript app</h1>
+    <script src="build/index.js"></script>
+</body>
+.....................................................................................
+             	 Typescript language fundamentals
+
+
+How to declare variables and how to use data types?
+
+Java script is dynamic and weakly typed language, data types are not necessary during declaration
+
+
+var or let or const variableName:datatype = value(literals)
+
+Types :
+primitive
+ 1.number
+ 2.string
+ 2.boolean
+ 
+reference types
+1.array  
+2.object
+
+other types;
+1.void
+2.undefined
+3.any
+4.unknown
+5.function
+6.enum
+7.union
+
+
+//prmitive data types 
+
+//strings - "",'',``(back tick - interpolation , multi line strings)
+
+//explcit type declaration: type is declared using :type
+let firstName: string = "subramanian"
+let lastName: string = 'Murugan'
+//string concation
+console.log("Name " + firstName + lastName)
+console.log("Name ", firstName, lastName)
+//es 6 string interpolation syntax
+console.log(`Name ${firstName} ${lastName}`)
+//backtick notation for multi line
+let message = 'Hello'
+let template = `
+  <div>
+    <h1>${message}</h1>
+  </div>
+`
+console.log(template)
+
+//implicit type declaration: type is declared without using :type
+//type inference: the type of the variable is assigned based on values
+let city = 'Coimbatore'
+let state = 'Tamil Nadu'
+console.log(city)
+console.log(state)
+
+//numbers - 
+let salary: number = 100
+let age = 18
+console.log(`salary ${salary}`)
+console.log(`age ${age}`)
+
+//booleans
+let isEnabled:boolean = true 
+let isActive = false 
+console.log(`isEnabled ${isEnabled}`)
+console.log(`isActive ${isActive}`)
+....................................................................................
+			How to find out compile time errors
+.....................................................................................
+
+let firstName: string = 'Subramanian'
+
+firstName =100
+
+[2:35:33 pm] File change detected. Starting incremental compilation...
+
+src/index.ts:3:1 - error TS2322: Type 'number' is not assignable to type 'string'.
+
+3 firstName =100
+  ~~~~~~~~~
+
+[2:35:33 pm] Found 1 error. Watching for file changes.
+
+
+undefined and any:
+.................
+//undefined: if variable is declared but not initalized
+
+
+//if variable is declared with no type , it is considered undefined later if you assgin any value, the type is not going to be the same type in future assigments, it looks like js 
+//which is not recommened
+let salary;
+console.log(salary)
+salary = 100
+console.log(salary)
+salary = "hello"
+console.log(salary)
+
+//if you dont know the type in advance, can we declare with undefined?
+//No : 
+ //use always any type.
+ let myvar:any 
+ console.log(myvar)
+ myvar = 100
+ console.log(myvar)
+ myvar = "hello"
+ console.log(myvar)
+.....................................................................................
+				functions
+....................................................................................
+
+//functions :
+function sayHello() {
+    console.log('hello')
+}
+sayHello()
+
+//function args and parameters
+function sayHai(name: string) {
+    console.log(`Hai ${name}`)
+}
+sayHai("Subramanian")
+// sayHai(100)
+
+//type inference with function parameters
+function doStuff(message) {
+    console.log(message)
+}
+doStuff(100)
+doStuff("hello")
+doStuff(true)
+
+//what if i miss parameters
+//default args
+function add(a: number = 0, b: number = 0) {
+    let c = a + b
+    console.log(c)
+}
+add(10, 10)
+add()
+
+//what if i miss parameters
+//optional args
+function multiply(a?: number, b?: number) {
+    let c = a * b
+    console.log(c)
+}
+multiply(10, 10)
+multiply()
+//optional vs defalult
+/**
+ * optional args are initized with undefined
+ * default args are intialized with some value
+ * optionals may cause runtime errors ,where as default args not
+ */
+
+...
+Return type and functions:
+........................
+//return type
+
+function add(a: number = 0, b: number = 0): number {
+    return a + b
+}
+console.log(add(10,10))
+
+//void
+function sayHello():void {
+    console.log('void')
+}
+sayHello()
+
+///
+function literals:
+//function literals
+
+//hello is just variable holding function value
+
+let hello = function (name: string = '') {
+    console.log(`hello ${name}`)
+}
+//variable can be used to invoke function
+hello('Subramanian')
+//arrow functions: es 6 /ts syntax of declaring function.
+hello = (name: string = '') => {
+    console.log(`hello ${name}`)
+}
+hello('Subramanian')
+//having single line of body,we can omit {}
+hello = (name: string = ''): void => console.log(`hello ${name}`)
+hello('Subramanian')
+
+let add = (a: number = 0, b: number = 0): number => {
+    return a + b
+}
+console.log(add(10, 10))
+//function having return statement only,remove {} and return statement
+
+add = (a: number = 0, b: number = 0): number => a + b
+console.log(add(10, 10))
+....................................................................................
+.....................................................................................
+			  	Union Type
+.....................................................................................
+
+A variable can hold more than one data type.
+
+let  a : number | string 
+
+a=100
+a="100"
+
+a =true -false
+
+//union type
+
+let myvar: number | string;
+myvar = 100;
+myvar = "900"
+// myvar =true
+
+//union type: a variable can hold many types or constant values
+
+let id: number | string
+id = 100;
+id = "abc100"
+//id =true //error
+
+//union type allows specifivalues
+let gender: "Male" | "Female" | "Third"
+
+gender = "Male"
+//gender ="others"
+
+let ticketStatus: 0 | 1
+
+function Mode(varient: "dark" | "light") {
+    console.log(varient)
+}
+Mode("dark")
+Mode("light")
+
+function Person(gender: "Male" | "Female" | "Third" | undefined, active: true | false) {
+    console.log(gender, active)
+}
+Person("Female", true)
+Person("Male", false)
+.......................................
+const:
+  it is read only - cant be reinalized
+let vs const
+ let is reassignable where as const is read only.
+
+let a =10;
+console.log(a)
+a =90
+console.log(a)
+const pi=10.5
+console.log(pi)
+//pi =90.8
+.....................................................................................
+				Object oriented Programming In TS
+.....................................................................................
+class declaration
+  instance variables , methods
+  constructors and parameters
+  create instance
+
+class Employee {
+    //instance variables
+    id: number = 1
+    name: string = ''
+    salary: number = 0.0
+
+}
+
+//let is keyword
+//emp is reference variable which points the object location
+//new is keyword
+//Employee() - Constructor call.
+let emp = new Employee()
+console.log(`Id ${emp.id} Name ${emp.name} Salary ${emp.salary}`)
+
+How to initalize the variables:
+1.direct
+2.after object creating using reference variable
+class Employee {
+    //instance variables
+    id: number = 0
+    name: string = ''
+    salary: number = 0.0
+
+}
+
+//let is keyword
+//emp is reference variable which points the object location
+//new is keyword
+//Employee() - Constructor call.
+let emp = new Employee()
+emp.id = 100
+emp.name = 'Subramanian'
+emp.salary = 9000
+console.log(`Id ${emp.id} Name ${emp.name} Salary ${emp.salary}`)
+
+3.via constructors
+class Employee {
+    //instance variables
+    id: number
+    name: string
+    salary: number
+    constructor(id: number = 0, name: string = '', salary: number = 0.0) {
+        this.id = id 
+        this.name = name 
+        this.salary = salary
+    }
+
+}
+
+//let is keyword
+//emp is reference variable which points the object location
+//new is keyword
+//Employee() - Constructor call.
+let emp = new Employee(12,'Subramanian',234.90)
+
+console.log(`Id ${emp.id} Name ${emp.name} Salary ${emp.salary}`)
+...................................................................................
+			 methods inside class
+...................................................................................
+class TodoService {
+    constructor() {
+
+    }
+    //methods
+    findAll(): string {
+        return 'todos'
+    }
+    //arrow
+    save = (todo:string) => {
+        return 'save'
+    }
+}
+
+let todoService = new TodoService()
+console.log(todoService.findAll())
+console.log(todoService.save('todo'))
+.....................................................................................
+			 Encapsulation
+....................................................................................
+
+How to restrict code sharing?
+
+ts offers modifiers
+1.public
+2.private
+3.protected
+
+public :
+ all instance variables and methods by default public.
+ if you use public keyword no problem.
+
+private:
+ instance variables and methods declared with private , cant be accessed outside.
+class  Employee{
+    public id:number 
+    private password:string 
+    constructor(id:number,password:string){
+        this.id = id 
+        this.password = password
+    }
+    //public methods
+    public calculate(){
+        return 10
+    }
+    private generatePassword(){
+        return `Password is ${Math.random()}`
+    }
+}
+let emp = new Employee(1,'password')
+console.log(emp.id)
+// console.log(emp.password)
+console.log(emp.calculate())
+//console.log(emp.generatePassword())
+
+.....................................................................................
+			 Hierachy - HAS-A and Dependency Injection
+....................................................................................
+
+if the object has dependency with other objects.
+class OrderService {
+    constructor() {
+
+    }
+    findAll() {
+        return 'orders'
+    }
+}
+class OrderComponent {
+    private orderService: OrderService
+    constructor(orderService: OrderService) {
+        this.orderService = orderService
+    }
+    findAll() {
+        return this.orderService.findAll()
+    }
+}
+//link objects: has a : dependency Injection
+let orderCmp = new OrderComponent(new OrderService())
+console.log(orderCmp.findAll())
+.....................................................................................
+                    Code Refactoring using encapsulation and Has-a
+
+
+Before Refactoring:
+class Employee {
+    //instance variables
+    id: number
+    name: string
+    status: boolean
+    //here constructor args are called local variables
+    constructor(id: number = 0, name: string = '', status: boolean = false) {
+        this.id = id
+        this.name = name
+        this.status = status
+    }
+}
+let emp = new Employee(12,'murugan',true)
+console.log(emp)
+....
+
+//remove variables declaration inside class 
+//constructor local variables(args) can be converted into instance variable by adding either public or private
+class Employee {
+   //here constructor args are called local variables
+    constructor(public id: number = 0, public  name: string = '', public status: boolean = false) {
+        this.id = id
+        this.name = name
+        this.status = status
+    }
+}
+let emp = new Employee(12,'murugan',true)
+console.log(emp)
+.....
+
+
+//remove variables declaration inside class 
+//constructor local variables(args) can be converted into instance variable by adding either public or private
+//inside constructor itself we can remove
+
+class Employee {
+    //here constructor args are called local variables
+    constructor(public id: number = 0, public name: string = '', public status: boolean = false) { }
+}
+let emp = new Employee(12, 'murugan', true)
+console.log(emp)
+......
+class OrderService {
+    constructor() {
+
+    }
+    findAll() {
+        return 'orders'
+    }
+}
+class OrderComponent {
+    constructor(private orderService: OrderService) { }
+    findAll() {
+        return this.orderService.findAll()
+    }
+}
+//link objects: has a : dependency Injection
+let orderCmp = new OrderComponent(new OrderService())
+console.log(orderCmp.findAll())
+.....................******************............................................
+			IS-A - inheritance
+
+1.class inheritance - es 6 feature
+2.interface inheritance -ts feature
+3.abstract class inheritance -ts feature
+
+//class based inheritance:
+//extends,super,this - keyword
+//extends - two connect two classes
+//super - to access parent class constructor and methods
+//this - to access current class members
+
+class Account {
+    constructor() {
+        console.log('Account class')
+    }
+}
+class SavingsAccount extends Account {
+    constructor() {
+        super()
+        console.log('SavingsAccount class')
+    }
+}
+let sb = new SavingsAccount()
+
+...
+overriding:
+class Account {
+    constructor(){
+        console.log('Account class')
+    }
+    //
+    deposit(){
+        return 10
+    }
+}
+class SavingsAccount extends Account{
+    constructor(){
+        super()
+        console.log('SavingsAccount class')
+    }
+    //overriding
+    deposit(){
+        return 110 * super.deposit()
+    }
+}
+let sb = new SavingsAccount()
+console.log(sb.deposit())
+
+....................................................................................
+			  interfaces
+
+1.inspired from java,c# - to have common behaviours for different class heriachy
+
+
+interface Fly {
+    fly(): string
+}
+interface onInit {
+    init(): void
+}
+class Airplane implements Fly, onInit {
+    fly(): string {
+        return "AirPlane"
+    }
+    init(): void {
+        console.log('init')
+    }
+}
+
+let airPlane = new Airplane()
+console.log(airPlane.fly())
+airPlane.init()
+
+.....
+
+abstract class Animal {
+    abstract eat(): string
+    saveAnimals(): void {
+        console.log('Save animals from the hunter')
+    }
+}
+class Tiger extends Animal {
+    eat(): string {
+        return 'tiger hunts other animals'
+    }
+}
+let tiger = new Tiger()
+console.log(tiger.eat())
+tiger.saveAnimals()
+....................................................................................
+			Object literals
+..................................................................................
+
+Objects are created using literal pattern.
+
+//object literals
+
+let product = {
+    id:1,
+    name:'Phone',
+    qty:100,
+    price:100,
+    inStock:'Availble'
+}
+
+Reference Types or Object types:
+...............................
+
+1.class as type
+2.interface as type
+3.type keyword as type
+For literal objects, how to enforce type safty for literal objects.
+
+
+//object types
+class Product {
+    id: number
+    name: string
+    qty: number
+    price: number
+    inStock: "Available" | "NotAvailable"
+}
+
+//object literals
+let product:Product = {
+    id: 1,
+    name: 'Phone',
+    qty: 100,
+    price: 100,
+    inStock: 'Available'
+}
+...
+//object types
+interface Product {
+    id: number
+    name: string
+    qty: number
+    price: number
+    inStock: "Available" | "NotAvailable"
+}
+
+//object literals
+let product:Product = {
+    id: 1,
+    name: 'Phone',
+    qty: 100,
+    price: 100,
+    inStock: 'Available'
+}
+...................................
+
+//object types
+type Product = {
+    id: number
+    name: string
+    qty: number
+    price: number
+    inStock: "Available" | "NotAvailable"
+}
+
+//object literals
+let product:Product = {
+    id: 1,
+    name: 'Phone',
+    qty: 100,
+    price: 100,
+    inStock: 'Available'
+}
+....................................................................................
+				Optional and required Properties
+.....................................................................................//object types
+type Product = {
+    id: number
+    name: string
+    qty: number
+    price: number
+    inStock: "Available" | "NotAvailable"
+}
+
+let newProduct:Product = {
+    id: 1,
+    name: 'Phone' 
+}
+here errror will be thrown, ts verifies not only type but also existence of properties.
+//object types
+type Product = {
+    id: number
+    name: string
+    //? enable optional properties
+    qty?: number
+    price?: number
+    inStock?: "Available" | "NotAvailable"
+}
+
+//object literals
+let product:Product = {
+    id: 1,
+    name: 'Phone',
+    qty: 100,
+    price: 100,
+    inStock: 'Available'
+}
+
+let newProduct:Product = {
+    id: 1,
+    name: 'Phone' 
+}
+....................................................................................
+			    Generics
+
+What is generics?
+  To restict to have similar or same type of value inside container objects like array,Promise,Observable....
+
+Arrays:
+//Generics and arrays
+
+//Generics and arrays
+
+//without type
+let list = [1, "hello", true]
+console.log(list)
+
+//with type:syntax-1
+let numList: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+console.log(numList)
+//with type:syntax-2 : generics syntax
+let numList2: Array<number> = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+//functions return array
+function getList(): Array<number> {
+    return [1, 2, 3, 4, 5, 6]
+}
+function getNumList(): number[] {
+    return [1, 2, 3, 4, 5, 6]
+}
+//array of Employees
+class Employee {
+    id: number
+    name: string
+}
+
+let employees: Array<Employee> = [{
+    id: 1,
+    name: 'a'
+}]
+.....................................................................................
+				Enum Types
+....................................................................................
+enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+console.log(Direction.Up)
+console.log(Direction.Down)
+
+enum UserResponse {
+    No = 0,
+    Yes = 1,
+}
+function respond(recipient: string, message: UserResponse): void {
+    console.log(recipient, message)
+}
+
+respond("Princess Caroline", UserResponse.No);
+....................................&&&&&&&&&&&&&&&&&&&&............................
+			   Decorators
+....................................................................................
+
+
+annotations: @annotation , @Override,@Entity,@Controller
+
+-meta programming : isloate the code logic from main program to ouside, when you 
+req, you inject those features , into code during runtime.
+
+Decorators are experimental feature in es7. but ts added this language with experimental mode.
+
+What is decorator ?
+
+ It is simple javascript function.
+
+Steps
+
+1.declare decorator function
+ It is regular javascript function with some syntax.
+
+2.Use decorator
+ @Decorator
+		
+Types of decorator:
+1.class level decorator
+2.field level decorator
+3.method level decorator
+
+Angular provides lot of built in decorators,here we explore how to use those decorators and how it has been written.
+
+Step 0: 
+tsconfig.json
+{
+    "compilerOptions": {
+        "outDir": "build",
+        "watch": true,
+        "noEmitOnError": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true
+    },
+    "exclude": [
+        "node_modules"
+    ],
+    "files": [
+        "src/index.ts"
+    ]
+}
+
+Step 1:
+ Declare decorator function and write decorator logic
+
+Step 2:
+ Use/inject decorators on to class,field,method....
+
+//decorator 
+function Course(target: any) {
+    //decorator logic
+    Object.defineProperty(target.prototype, 'course', { value: 'Typescript' })
+}
+
+//class
+@Course
+class Student {
+    constructor(public name: string = '') { }
+}
+let student = new Student('Subramanian') as any
+console.log(`${student.name} is studying ${student.course} `)
+.....................................................................................
+
+//decorator 
+function Course(courseInfo: any) {
+    return function (target:any) {
+        //decorator logic
+        Object.defineProperty(target.prototype, 'course', { value: courseInfo })
+    }
+}
+
+//class
+@Course({ courseName: 'Angular', duration: '40 hrs' })
+class Student {
+    constructor(public name: string = '') { }
+}
+let student = new Student('Subramanian') as any
+console.log(`${student.name} is studying ${student.course.courseName} ${student.course.duration} `)
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.........,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+				
+
+				Modules
+
+Javascript modularity:
+
+
+Modularity:
+..........
+
+In java Modularity , is presented via "Packages"
+
+Package organize the code  logically.
+
+Customer.java
+
+package com.ibm.cms
+
+public class Customer{}
+
+Java organizes code folders and files Physically.
+
+d:/javaapps/src/
+    com/ibm/cms/Customer.java
+
+
+What about javascript Modularity?
+
+ Javascript is file based modularity physically
+ but logically there is no such modularity at language level.
+
+collection of variable declarations and function.
+
+Once js started growing in large scale, dev struck to organize code.
+
+2000, Smart developers started thinking about how to modualrize js code.
+ 
+
+Module design patterns came.
+
+1.Namespace design pattern : 2000 : jquery
+2.AMD -Async Module Defintion : dojo
+---------------------------------------------------------
+3.CJS - Common JS =  namespace + amd
+4.ES 6 Module design pattern  = amd + cjs
+------------------------------------------------------------
+5.System = AMD = CJS + ES 6
+6.UMD = NAMESPACE + AMD + CJS = ES 6
+...........................................................................................
+		 Typescript and ES 6 Module design patterns
+
+
+
+How to share code?
+  export , export default
+How to link files
+ import
+
+export is used to share more code from the single file
+export default is used to share only one code from the single file
+
+code:
+ variables
+ functions
+ classes/interfaces/enums
+
+.................................................................................
+
+
+src/services/user.service.ts
+
+
+//export means : share this class outside this file
+export class UserService {
+    constructor() {
+
+    }
+    findAll() {
+        return [{ id: 1, name: 'Arun' }, { id: 2, name: 'Subramanian' }]
+    }
+}
+src/controllers/user.component.ts
+import { UserService } from "../services/user.service";
+
+
+export class UserComponent {
+    constructor(private userSerivce: UserService) { }
+    init() {
+        console.log(this.userSerivce.findAll())
+    }
+}
+
+src/index.ts
+import { UserComponent } from "./controllers/user.component";
+import { UserService } from "./services/user.service";
+
+function main(){
+    let ctrl = new UserComponent(new UserService())
+    ctrl.init()
+}
+main()
+
+......
+After running inside browser:
+
+Uncaught SyntaxError: Cannot use import statement outside a module
+
+Why this error?
+   The browser cant understand es 6 modules directly. 
+   The browser has no facility to load and link files natively
+
+How to run this?
+  we need to use build tools, to pack our code into browser understandable format.
+
+build tools
+
+1.webpack
+
+How to install webpack in our project?
+
+Steps:
+
+1.make sure that you have package.json file
+ if not , create package.json file
+
+npm init
+
+2.install webpack
+  npm install webpack webpack-cli --save-dev
+
+3.add webpack.config.js in the project root dir
+
+const path = require('path');
+
+module.exports = {
+  entry: './build/index.js',
+  mode:'development',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+  },
+};
+
+4.build /bundle your code
+ open package.json
+ add entry into scripts
+
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  }
+
+5.start bundling
+  open cmd and run the following command
+npm run build
+
+> es6-apps@1.0.0 build
+> webpack
+
+asset bundle.js 5.19 KiB [emitted] (name: main)
+runtime modules 670 bytes 3 modules
+cacheable modules 758 bytes
+  ./src/index.js 146 bytes [built] [code generated]
+  ./src/mylib.js 612 bytes [built] [code generated]
+webpack 5.70.0 compiled successfully in 113 ms
+
+6.add bundle file inside index.html
+     <script src="dist/bundle.js"></script>
+
+
+
+
+
+ 

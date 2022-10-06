@@ -1,0 +1,12 @@
+//return type
+
+function add(a: number = 0, b: number = 0): number {
+    return a + b
+}
+console.log(add(10,10))
+
+//void
+function sayHello():void {
+    console.log('void')
+}
+sayHello()
