@@ -1,0 +1,722 @@
+				Angular
+...................................................................................
+
+What is angular?
+
+ Angular is framework and platform to build  Client side "WebApps"
+
+Client side apps
+1.SPA - Single Page Web App
+2.SSR - Server side Rendering web App
+3.PWA - Progressive web apps
+
+SPA We are going build.
+
+Core concepts of Angular:
+
+1.Angular is object oriented Framework because Angular is written in Typescript.
+2.Angular uses many design patterns 
+  ->MVC 
+  ->IOC 
+  ->Single Ton
+3.Angular objects are two types
+ 1.Infra objects
+    in order build apps we need infra objects
+ Module
+ Component
+ Services
+ Directives
+ Pipes
+ All infra objects are created automatically by angular framework.
+ 2.Domain objects
+   Represents domain like customers,users,products..... 
+
+4.Angular apps are modular by default
+  Types of modularity:
+  1.File based modularity using es 6 modules - export,import
+  2.Logical modularity using angular objects.
+
+5.Angular offers lot of built in decorators
+  @Module,@Component,@Directive @Pipe, @Injectable,@Input,@Output.....
+
+Steps :  Project creation:
+
+Angular cli project:
+
+npm install -g @angular/cli
+.....................................................................................
+				Work flow
+
+index.html
+   -->main.js   | main.ts
+      |
+      app.module.js | app.module.ts
+       |
+       app.component.js | app.component.ts
+	|
+       View
+
+<app-root></app-root> =?
+  -This is custom html elements
+
+HTML elements:
+ 1.built in elements -  h1,div,span,p,button
+ 2.custom elements  -  elements are created by our own using js,css,html
+                        <app-root> <app-users>
+
+How user interface is designed and created?
+
+ basic design is html
+
+layout:
+ <div>
+     <header></header>
+    	 <div>
+		<section>user details </section>
+	</div>
+  
+    <footer></footer>
+ <div>
+
+Angular uses the concept called "Component Driven Design"
+  
+ The big user interface is broken into smallar and smaller , later composed, reusable.
+
+Component :
+   header
+   footer
+   usercomponent
+
+header Component:
+  <app-header>
+ 
+user Component:
+  <app-user>
+
+footer component
+<app-footer>
+
+footer component
+<app-page>
+
+
+The structure of app is based on hierachical structure/tree model
+..................................................................
+
+<app-root>
+ <app-page>
+    <app-header></app-header>
+    <app-user>  </app-user>
+    <app-footer></app-footer>
+ </app-page>
+</app-root>
+
+Angular App must begin with root Controller - called as app.component
+
+
+App Module:
+ - It is object,container object which contains the whole application.
+ - Responsible for begining ioc process- creating objects and its dependencies objects
+ - lanuch main controller, so that first landing page will be displayed.
+
+How to create app module?
+
+1.declare class
+2.decorate class using decorators -@NgModule
+3.every decorator takes parameters which is object- decorator meta data.
+Module Decorator meta data properties
+
+
+These options talks about object creation declarations, we never create objects,
+only ng creates objects,
+even ng create objects, we need to tell ng that for this class we need to create object
+
+Object types:
+1.view objects
+   component,pipe,directive   
+ all view objects declarations will go inside "declarations"
+2.sub module objects
+   all submodule declarations will go inside "imports"
+3.services
+  all  services will go inside "providers"
+  declarations: [],
+  imports: [],
+  providers: [],
+
+bootStrap:
+  Which is root controller.
+
+
+How to create component? - App compoent?
+
+1.declare class
+2.decorate with @Component
+3.write logic
+
+
+Component decorator meta data
+ selector:'app-root' -  custom element name
+ template/templateUrl:'app.component.html'
+
+Template:
+  Collection of html elements and angular instructions
+Inline template
+  part of controller/cmp
+external template
+  outside ctrl/cmp
+ 
+import { Component } from "@angular/core";
+
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.component.html'
+})
+export class AppComponent {
+
+}
+.....................................................................................
+
+Custom Compoents:
+
+
+Step 1 - declare
+import { Component } from "@angular/core";
+
+@Component({
+    selector: 'app-greeter',
+    template: `
+        <div>
+            <h1>Greeter</h1>
+        </div>
+    `
+})
+export class GreeterComponent { }
+
+Step 2 .Inject component into a module
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
+import { AppComponent } from "./app.component";
+import { GreeterComponent } from "./greeter.component";
+
+@NgModule({
+  declarations: [AppComponent,GreeterComponent],
+  imports: [BrowserModule],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+Step 3. Refer the component where ever you want.
+<div>
+  <h1>Welcome To Angular Apps</h1>
+  <app-greeter></app-greeter>
+</div>
+....................................................................................
+				Modularization
+...................................................................................
+
+Types of modules
+1.ES 6 modules
+  folders
+    files
+2.Logical modules
+   Using @NgModule
+
+app/greeter/greeter.component.ts
+
+import { Component } from "@angular/core";
+
+@Component({
+    selector: 'app-greeter',
+    template: `
+        <div>
+            <h1>Greeter</h1>
+        </div>
+    `
+})
+export class GreeterComponent { }
+
+
+app/greeter
+ greeter.module.ts
+import { NgModule } from "@angular/core";
+import { GreeterComponent } from "./greeter.component";
+
+@NgModule({
+    declarations: [GreeterComponent],
+    imports: [],
+})
+export class GreeterModule { }
+
+app.module.ts
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
+import { AppComponent } from "./app.component";
+import { GreeterModule } from "./greeter/greeter.module";
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule,GreeterModule],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+After running this we get error
+Error: src/app/app.component.html:3:3 - error NG8001: 'app-greeter' is not a known element:
+1. If 'app-greeter' is an Angular component, then verify that it is part of this module.
+2. If 'app-greeter' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+
+3   <app-greeter></app-greeter>
+
+Scope: 
+ Any component is declared inside a module, will be available only within that module only. - private scope
+ how to make it available outside the module - public scope
+
+in the module configuration
+
+ exports -options.
+
+import { NgModule } from "@angular/core";
+import { GreeterComponent } from "./greeter.component";
+
+@NgModule({
+    declarations: [GreeterComponent],
+    imports: [],
+    exports: [GreeterComponent]
+})
+export class GreeterModule { }
+..................................&&&&&&&&&&&&&&&&&&................................
+		 Angular coding best pratices -Angular Style Guide
+...................................................................................
+
+https://angular.io/guide/styleguide
+
+File structure conventions:
+
+->file must follow the domain model.
+
+product:
+ Ng has lot of infra objects (module,component,pipe,services...)
+
+component:
+ It has so many files
+ .ts file
+    component file
+    component spec file -  unit testing file
+ .html file
+ .css file
+
+header.component.ts | spec.ts | .html | .css
+
+header.component.ts
+header.component.html
+header.component.css
+header.component.spec.ts
+
+Modules
+ header.module.ts
+
+
+style guide for file names
+
+domainname.component|service|directive|pipe.ts
+
+hero.component.ts
+hero.service.ts
+hero.directive.ts
+hero.pipe.ts
+
+Custom elements Naming convention:Component selectors
+
+ <app-root> - recommended
+  
+ <approot>  - not recommended.
+
+Do use dashed-case or kebab-case for naming the element selectors of components.
+
+Should i use always app?
+ Not Necessary
+app is default prefix, it can be changed - angular.json file
+
+ibm-root
+ibm-customer
+ibm-product
+............................................................................................
+
+class Names:
+
+ 1.Noun
+ 2.should be meaningfull
+ 3.should have suffix component,service,directive,pipe
+
+ HeaderComponent
+ HeaderService
+ HeaderDirective
+ HeaderPipe
+
+..................................................................................
+			      Automation
+
+Problems in the dev flow:
+
+Tasks:
+
+1.create folder
+2.create files - component-ts,html,css,spec
+3.create module
+4.declare class -cmp,service...
+5.refer the classes inside module
+6.you need to inject submodule into main module..
+
+DRY
+
+
+if you repeate the same thing for every object , which increases lot of time.
+
+Automation:
+ code generation automation
+
+angular cli tool to generate code.
+
+Generates and/or modifies files based on a schematic.
+
+ng generate <schematic> [options]
+ng g <schematic> [options]
+
+
+
+Task:
+1.create folder
+2.create submodule
+
+module:
+  --flat
+  --module
+  --route
+  --project
+etc...
+
+ng g m footer --module=app
+ng g m footer 
+
+create folder called footer
+update/inject footer module inside app
+
+create component, inside footer folder, inject into footer module, make it available public
+
+i dont want css file,i want html file,i dont want spec file
+
+ng g c footer/footer  --flat=true --export=true --inline-style=true --skip-tests=true   --module=footer
+
+ng g c footer/footer  --flat=true --export=true  --module=footer
+
+
+ --flat=true :  create any thing inside exsiting folder
+ --export=true : make it public
+ --inline-style=true : i dont want css file
+ --skip-tests=true  :dont create spec files
+ --module=footer  : inject inside footer module
+
+ng g m body --module=app   
+ng g c body/body  --flat=true --export=true --inline-style=true --skip-tests=true   --module=body
+...................................................................................
+			MVC App
+
+M- Model - Data
+C -Controller - Every Component is Controller.
+V- View
+
+
+Transfering data from the controller to View - Data binding
+
+State : Data
+In Angular state can represented 
+
+primitives
+objects
+arrays
+
+Types of databinding
+1.interpolation
+2.property binding
+3.attribute binding
+4.event binding
+5.two way data binding
+6.class binding
+7.style binding
+
+
+1.interpolation:
+
+Transfering data(state) from the controller(component) to template(view)
+
+Template: collection of html elements + angular instructions
+
+angular instructions: special symbols
+
+{{}}
+[]
+*
+()
+#
+
+{{}} - bind state variable inside template.
+
+User List:
+.........
+User component
+User mock
+User type
+Iterating
+
+
+
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { UserlistComponent } from './userlist.component';
+
+@NgModule({
+  declarations: [UserlistComponent],
+  imports: [
+    CommonModule
+  ],
+  exports: [UserlistComponent]
+})
+export class UsersModule { }
+
+import { Component, OnInit } from '@angular/core';
+import { User } from './user.type';
+import { USERS } from './users.mock';
+
+
+@Component({
+  selector: 'app-userlist',
+  templateUrl: './userlist.component.html',
+  styles: [
+  ]
+})
+export class UserlistComponent implements OnInit {
+
+  users:Array<User> = USERS
+  constructor() { }
+  ngOnInit(): void {
+  }
+
+}
+
+<div>
+    <h2>User List</h2>
+    <!-- loop to iterate an Array -->
+    <!-- *ngFor is for loop -->
+    <ul>
+        <li *ngFor="let user of users">
+            <span>{{user.name}}</span>
+        </li>
+    </ul>
+</div>
+
+import { User } from "./user.type";
+
+export const USERS:Array<User> = [{
+    "id": 1,
+    "name": "Dr.Nice",
+
+},
+{
+    "id": 2,
+    "name": "Bombastor",
+
+},
+{
+    "id": 3,
+    "name": "RubberMan",
+
+},
+{
+    "id": 4,
+    "name": "Spider Man",
+
+},
+{
+    "id": 5,
+    "name": "Celeritas",
+
+},
+{
+    "id": 6,
+    "name": "Dynama",
+
+},
+{
+    "id": 7,
+    "name": "Dr.IQ",
+
+},
+{
+    "id": 8,
+    "name": "Magma",
+
+},
+{
+    "id": 9,
+    "name": "Iron Man"
+}
+]
+....
+<div>
+    <h1>User Management App</h1>
+    <app-userlist></app-userlist>
+</div>
+....................................................................................
+				Service layer
+.....................................................................................
+		How to isloate the data from the component/controller
+.....................................................................................
+
+Angular uses a concept called "Services".
+
+What is Service?
+
+  Service is Object, which has biz logic and data.
+
+Service is class which should be decorated with @Injectable annotation
+
+Object creations for services:
+
+Service creation informations can be kept 
+
+providers of any module - root or submodule - old style
+inline declaration -
+
+@Injectable({
+    providedIn: 'root' // Use root injector to create this instance...
+})
+.....
+
+import { Injectable } from "@angular/core";
+import { User } from "./user.type";
+import { USERS } from './users.mock';
+
+@Injectable({
+    providedIn: 'root' // Use root injector to create this instance...
+})
+export class UserService {
+    constructor() { }
+    //api 
+    public getUsers(): Array<User> {
+        return USERS
+    }
+}
+import { Component, OnInit } from '@angular/core';
+import { UserService } from './user.service';
+import { User } from './user.type';
+///import { USERS } from './users.mock';
+
+
+@Component({
+  selector: 'app-userlist',
+  templateUrl: './userlist.component.html',
+  styles: [
+  ]
+})
+export class UserlistComponent implements OnInit {
+
+  //users:Array<User> = USERS
+  users!: Array<User>
+  //Dependency Injection
+  constructor(private userService: UserService) { }
+
+  ngOnInit(): void {
+    //here we need to call services 
+    this.users = this.userService.getUsers()
+  }
+
+}
+.................................................................................
+			 Service can have other service depdencies too
+..................................................................................
+
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class LoggerService {
+  messages: string[] = []
+  constructor() { }
+  add(message: string) {
+    this.messages.push(message)
+  }
+  clear() {
+    this.messages = []
+  }
+}
+
+import { Injectable } from "@angular/core";
+import { LoggerService } from "../util/logger.service";
+import { User } from "./user.type";
+import { USERS } from './users.mock';
+
+@Injectable({
+    providedIn: 'root' // Use root injector to create this instance...
+})
+export class UserService {
+    constructor(private logger: LoggerService) { }
+    //api 
+    public getUsers(): Array<User> {
+        this.logger.add("User Service: fetched Users ")
+        return USERS
+    }
+}
+import { Component, OnInit } from '@angular/core';
+import { LoggerService } from '../util/logger.service';
+import { UserService } from './user.service';
+import { User } from './user.type';
+///import { USERS } from './users.mock';
+
+
+@Component({
+  selector: 'app-userlist',
+  templateUrl: './userlist.component.html',
+  styles: [
+  ]
+})
+export class UserlistComponent implements OnInit {
+
+  //users:Array<User> = USERS
+  users!: Array<User>
+  //Dependency Injection
+  constructor(private userService: UserService,public logger:LoggerService) { }
+
+  ngOnInit(): void {
+    //here we need to call services 
+    this.users = this.userService.getUsers()
+  }
+
+}
+<div>
+    <h2>User List</h2>
+    <!-- loop to iterate an Array -->
+    <!-- *ngFor is for loop -->
+    <ul>
+        <li *ngFor="let user of users">
+            <span>{{user.name}}</span>
+        </li>
+    </ul>
+    <!-- Todo: remove this after dev is over -->
+    <div *ngFor="let msg of logger.messages">
+         <span>{{msg}}</span>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+

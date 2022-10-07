@@ -1,0 +1,14 @@
+<div>
+    <h2>User List</h2>
+    <!-- loop to iterate an Array -->
+    <!-- *ngFor is for loop -->
+    <ul>
+        <li *ngFor="let user of users">
+            <span>{{user.name}}</span>
+        </li>
+    </ul>
+    <!-- Todo: remove this after dev is over -->
+    <div *ngFor="let msg of logger.messages">
+         <span>{{msg}}</span>
+    </div>
+</div>
