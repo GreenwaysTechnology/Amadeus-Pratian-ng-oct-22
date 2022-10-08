@@ -2,13 +2,18 @@
     <h2>User List</h2>
     <!-- loop to iterate an Array -->
     <!-- *ngFor is for loop -->
-    <ul>
+    <!-- <ul>
         <li *ngFor="let user of users">
             <span>{{user.name}}</span>
         </li>
-    </ul>
+    </ul> -->
+    <!-- <app-usersdetails  (onSendRequest)="getUser($event)"  [users]="users" ></app-usersdetails> -->
+
+    <app-usersdetails  (onSendRequest)="getUser($event)"  [users]="users$" ></app-usersdetails>
+    
+
     <!-- Todo: remove this after dev is over -->
-    <div *ngFor="let msg of logger.messages">
+    <!-- <div *ngFor="let msg of logger.messages">
          <span>{{msg}}</span>
-    </div>
+    </div> -->
 </div>

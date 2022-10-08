@@ -709,6 +709,1447 @@ export class UserlistComponent implements OnInit {
          <span>{{msg}}</span>
     </div>
 </div>
+....................................................................................
+				Component Responsibility
+
+1.Talks to the service and get data
+2.Display data in the interface.
+
+According to component driven design, the user interface must be broken into
+
+1.The component which talks to service only  - Parent Component /Container Component
+2.The component which displays the data and User interface /Child / Presentational Component
+
+Finding hierachical relationship in the components - angular dev tool.
+
+Property Binding:
+ Passing data from the parent component to child compoent as prop.
+
+[] - symbol used to send data from the parent to child
+
+parent template
+
+  <app-child [propName]="propValue"></app-child>
+
+propValue can be any thing from strings,numbers,boolean,object,array
+propValue can be hard coded or variables
+propName can be any thing.
+
+<app-usersdetails [users]="users" ></app-usersdetails>
+
+
+How to receive data in the child component?
+
+declare prop variable in the child component.
+decorate the variable using @Input decorator
+
+EG:
+import { Component, OnInit } from '@angular/core';
+import { LoggerService } from '../util/logger.service';
+import { UserService } from './user.service';
+import { User } from './user.type';
+///import { USERS } from './users.mock';
+
+
+@Component({
+  selector: 'app-userlist',
+  templateUrl: './userlist.component.html',
+  styles: [
+  ]
+})
+export class UserlistComponent implements OnInit {
+
+  //users:Array<User> = USERS
+  users!: Array<User>
+  //Dependency Injection
+  constructor(private userService: UserService,public logger:LoggerService) { }
+
+  ngOnInit(): void {
+    //here we need to call services 
+    this.users = this.userService.getUsers()
+  }
+
+}
+
+<div>
+    <h2>User List</h2>
+    <!-- loop to iterate an Array -->
+    <!-- *ngFor is for loop -->
+    <!-- <ul>
+        <li *ngFor="let user of users">
+            <span>{{user.name}}</span>
+        </li>
+    </ul> -->
+    <app-usersdetails [users]="users" ></app-usersdetails>
+    <!-- Todo: remove this after dev is over -->
+    <div *ngFor="let msg of logger.messages">
+         <span>{{msg}}</span>
+    </div>
+</div>
+
+
+
+import { Component, Input, OnInit } from '@angular/core';
+import { User } from './user.type';
+
+@Component({
+  selector: 'app-usersdetails',
+  templateUrl: './usersdetails.component.html',
+  styles: [
+  ]
+})
+export class UsersdetailsComponent implements OnInit {
+
+  @Input()
+  users!:Array<User>
+   
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+<li *ngFor="let user of users">
+    <span>{{user.name}}</span>
+</li>
+...................................................................................
+				CSS integration
+....................................................................................
+
+Global css:
+styles.css
+/* Global Styles */
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    color: #264D73;
+    font-size: 2.5rem;
+}
+
+h2,
+h3 {
+    color: #444;
+    font-weight: lighter;
+}
+
+h3 {
+    font-size: 1.3rem;
+}
+
+body {
+    padding: .5rem;
+    max-width: 1000px;
+    margin: auto;
+}
+
+@media (min-width: 600px) {
+    body {
+        padding: 2rem;
+    }
+}
+
+body,
+input[text] {
+    color: #333;
+    font-family: Cambria, Georgia, serif;
+}
+
+a {
+    cursor: pointer;
+}
+
+button {
+    background-color: #eee;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: black;
+    font-size: 1.2rem;
+    padding: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+button:hover {
+    background-color: black;
+    color: white;
+}
+
+button:disabled {
+    background-color: #eee;
+    color: #aaa;
+    cursor: auto;
+}
+
+/* Navigation link styles */
+nav a {
+    padding: 5px 10px;
+    text-decoration: none;
+    margin-right: 10px;
+    margin-top: 10px;
+    display: inline-block;
+    background-color: #e8e8e8;
+    color: #3d3d3d;
+    border-radius: 4px;
+}
+
+nav a:hover {
+    color: white;
+    background-color: #42545C;
+}
+
+nav a.active {
+    background-color: black;
+    color: white;
+}
+
+hr {
+    margin: 1.5rem 0;
+}
+
+input[type="text"] {
+    box-sizing: border-box;
+    width: 100%;
+    padding: .5rem;
+}
+...................................................................................
+			  User interactions - Event Binding
+..................................................................................
+
+Event Binding:
+ Attach event listener on any dom element
+
+() - Event binding notation
+
+Syntax:
+ <button (NameOfTheEvent)="listener">View</button>
+
+Listener is method inside class.
+Listener is invoked when we click the button.
+
+Use Case:
+ Building Master details view
+
+When we click particular element, we need to display that details below.
+
+<ul class="users">
+    <li *ngFor="let user of users">
+        <span class="badge">{{user.id}}</span>
+        <span class="name">{{user.name}}</span>
+        <button (click)="onSelect(user)" >Details</button>
+
+    </li>
+</ul>
+<hr>
+<div>
+    <h2>{{user.id}} details</h2>
+</div>
+import { Component, Input, OnInit } from '@angular/core';
+import { User } from './user.type';
+
+@Component({
+  selector: 'app-usersdetails',
+  templateUrl: './usersdetails.component.html',
+  styleUrls: ['./users.component.css']
+})
+export class UsersdetailsComponent implements OnInit {
+
+  @Input()
+  users!:Array<User>
+  //selected user
+  user!:User
+   
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+  //Listener method
+  onSelect(user:User){
+    console.log(user)
+    this.user = user
+  }
+
+}
+
+After running this code we get error.
+
+main.ts:12 ERROR TypeError: Cannot read properties of undefined (reading 'id')
+    at UsersdetailsComponent_Template (usersdetails.component.html:11:9)
+    at executeTemplate (core.mjs:12084:9)
+    at refreshView (core.mjs:11969:13)
+    at refreshComponent (core.mjs:13043:13)
+    at refreshChildComponents (core.mjs:11759:9)
+    at refreshView (core.mjs:12019:13)
+    at refreshComponent (core.mjs:13043:13)
+    at refreshChildComponents (core.mjs:11759:9)
+    at refreshView (core.mjs:12019:13)
+    at refreshComponent (core.mjs:13043:13)
+
+This error because of
+
+ //selected user
+  user!:User
+   
+Here this variable default value is undefined, when access property inside template during first rendering process you get error.
+<div>
+    <h2>{{user.id}} details</h2>
+</div>
+
+How to fix this problem?
+
+Conditional Rendering:
+.....................
+
+we need to verfiy the object whether is undefined or null.
+
+How to implement conditional Rendering?
+
+Using if and switch case
+
+In Angular if and switch is distributed via "directives".
+
+.....................................................................................
+			   Directives
+.....................................................................................
+.........
+What is directive?
+  Directive is custom element / attribute..
+
+<app-root> ,<app-root [title]>
+
+
+Types of Directives:
+1.Template directive
+2.Structural directive
+3.Attribute directive
+
+1.Template directive
+   The directive with Template ; all components create template directive
+  <app-root> ----------------template directive
+  <app-profile>--------------template directive
+
+All component's meta data is inherited from Directive meta.
+Directive is parent , Component is child
+
+Every component is directive.
+
+
+
+2.Structural Directive
+   It is type of directive, used to change HTML Layouts.
+   They shape or reshape the DOM's "Structure" typically by adding,removing and manipulating
+   the host elements to which they attached.
+   
+  -Host element means html elements eg div,span,li,table.
+  -It is one of the "special attribute" directive
+  -All structural directive starts with "*" notation.
+
+*ngFor -  Structural Directive
+
+Built in structural directives
+
+1.*ngFor : for loop
+2.*ngIf  : if condition
+3.*ngSwitch : switch...case
+
+
+List /Array rendering:
+......................
+
+Layouts:
+1.List view Layout
+   -ul li
+2.Card View Layout
+  div
+3.Grid View Layout
+  table tr td
+
+
+1.for Loop: *ngFor
+
+-where ever you want to repeate elements
+
+element could be dom element or custom elements
+
+eg:
+ <anyelement *ngFor="condition">
+
+ <div *ngFor="let variableName of arrayname">
+       {{VariableName.property}}
+ </div>
+ This code will create more div elements
+
+ <app-item-list *ngFor="">
+Static view:
+<ul>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+
+    </ul>
+
+<div>
+    <h1 style="text-align: center;">For loop</h1>
+
+    <!--ul element-->
+    <ul>
+        <li *ngFor="let i of numbers">{{i}}</li>
+    </ul>
+    <!--Ui element for tod-->
+    <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let todo of todos">
+            <span class="badge badge-primary badge-pill"> {{todo.id}} </span> {{todo.title}}
+        </li>
+
+    </ul>
+    <div class="card" *ngFor="let todo of todos">
+        <h5 class="card-header">{{todo.id}}</h5>
+        <div class="card-body">
+            <h5 class="card-title">{{todo.userId}}</h5>
+            <p class="card-text">{{todo.title}}</p>
+            <a href="#" class="btn btn-primary">Update</a>
+        </div>
+    </div>
+</div>
+
+////////////////////////////////////////////////////////////////////////////////////////////
+
+eg:
+<div>
+    <ul>
+        <li *ngFor="let course of courses">
+            {{course}}
+        </li>
+    </ul>
+</div>
+<h2>Users data</h2>
+<div>
+    <div *ngFor="let user of users">
+        <h3>{{user.username}}</h3>
+        <p>{{user.email}}</p>
+        <address>
+            <p>{{user.address.street}},{{user.address.city}}</p>
+        </address>
+    </div>
+</div>
+.....................................................................................
+				  *ngIf
+
+To implement if condition
+
+<ul class="users">
+    <li *ngFor="let user of users">
+        <span class="badge">{{user.id}}</span>
+        <span class="name">{{user.name}}</span>
+        <button (click)="onSelect(user)" >Details</button>
+
+    </li>
+</ul>
+<hr>
+<div *ngIf="user" >
+    <h2>{{user.name}} details</h2>
+    <div>id : {{user.id}}</div>
+</div>
+
+<br>
+<div *ngIf="selectedUser">
+  <h3>{{selectedUser.id}} details</h3>
+  <h4>Name : {{selectedUser.name | titlecase}}</h4>
+  <h4>Date : {{selectedUser.date | date}}</h4>
+  <h4>Points :{{selectedUser.points | decimalFraction}}</h4>
+</div>
+...................................................................................
+			   Dynamic CSS
+...................................................................................
+
+When i select an item, i want to apply css to that item only.
+
+We can add dynamically css classes and can remove css classes
+
+[classTobeAppled]="condition"
+
+if condition is true class to be applied , if condition is false class to be removed.
+
+<ul class="users">
+    <li *ngFor="let user of users">
+        <button [class.selected]="user===selectedUser"   (click)="onSelect(user)">
+            <span class="badge">{{user.id}}</span>
+            <span class="name">{{user.name}}</span>
+        </button>
+    </li>
+</ul>
+<hr>
+<div *ngIf="selectedUser">
+    <h2>{{selectedUser.name}} details</h2>
+    <div>id : {{selectedUser.id}}</div>
+</div>
+.....................................................................................
+		   User Input,Two way Data binding,Custom Events
+.....................................................................................
+
+User Input:
+ Using form elements
+ input
+ select
+ radio
+ checkbox
+ submit
+ reset
+ form
+ label
+
+...................................................................................
+				  Forms
+..............................................................................................
+
+Forms are used to get input from the User.
+
+Types of Forms
+
+1.Template driven Forms -  Using HTML
+2.Reactive forms -  Via coding
+
+Template Driven forms:
+.......................
+
+
+
+
+
+
+
+
+<div class="container">
+    <h3>Sign In</h3>
+    <div>
+        <p>{{user.id}} {{user.name}}</p>
+    </div>
+    <form #userForm="ngForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="id">Id</label>
+            <input type="number" #idErrorMsg="ngModel" [(ngModel)]="user.id" name="id" class="form-control" id="id"
+                required>
+        </div>
+        <!-- Attribute Binding : Binding html attributes dynamically -->
+        <!-- <div [hidden]="boolean"> </div> -->
+        <div [hidden]="idErrorMsg.valid || idErrorMsg.pristine" class="alert alert-danger">
+            Id is required
+        </div>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" #nameErroMsg="ngModel" [(ngModel)]="user.name" name="name" class="form-control" id="name" required>
+        </div>
+        <div [hidden]="nameErroMsg.valid || nameErroMsg.pristine" class="alert alert-danger">
+            Name is required
+        </div>
+        <button type="submit" [disabled]="!userForm.form.valid" class="btn btn-success">Submit</button>
+    </form>
+</div>
+import { Component, OnInit } from '@angular/core';
+import { UserModel } from './user.model';
+
+@Component({
+  selector: 'app-userform',
+  templateUrl: './userform.component.html',
+  styles: [
+  ]
+})
+export class UserformComponent implements OnInit {
+  user = new UserModel(100, "Default")
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+  onSubmit(){
+    console.log(this.user)
+    this.user =  new UserModel(100, "Default")
+  }
+
+}
+....................................................................................
+			   How to submit form data to the service?
+
+
+app-root
+   |
+   app-userlist ---------------------| Service
+	|
+        app-userdetails
+		|
+		app-userform
+
+
+Form is child component , where we need to send data to service layer....
+As per component driven design , we should not send data from child component to service layer, rahter we have to pass data to the Parent component , parent will send data to child 
+    This pattern is called "Event Emitter Pattern"
+
+
+....................................................................................
+			  Event Emitter Pattern
+			     (Custom Events)
+.....................................................................................
+
+Child:
+
+1.We need to create EventEmitter object
+
+  @Output()
+  onSendRequest = new EventEmitter<User>();
+
+ here 
+  onSendRequest is Name of the Event- Custom Event
+  EventEmitter is Object used to broadcast/send data to the Parent 
+  @Output is used to send data to the Parent where ever the event attached.
+
+
+Steps:
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { UserModel } from './user.model';
+import { User } from './user.type';
+
+@Component({
+  selector: 'app-userform',
+  templateUrl: './userform.component.html',
+  styles: [
+  ]
+})
+export class UserformComponent implements OnInit {
+  user = new UserModel(100, "Default")
+  //create CustomEvent Emitter Object
+  @Output()
+  onSendRequest = new EventEmitter<User>
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+  onSubmit() {
+    //broadcast data to the parent
+    this.onSendRequest.emit(this.user)
+    this.user = new UserModel(100, "Default")
+  }
+
+}
+
+Parent:
+  <div>
+    <h2>User List</h2>
+    <!-- loop to iterate an Array -->
+    <!-- *ngFor is for loop -->
+    <!-- <ul>
+        <li *ngFor="let user of users">
+            <span>{{user.name}}</span>
+        </li>
+    </ul> -->
+    <app-usersdetails  (onSendRequest)="getUser($event)"  [users]="users" ></app-usersdetails>
+
+    
+
+    <!-- Todo: remove this after dev is over -->
+    <!-- <div *ngFor="let msg of logger.messages">
+         <span>{{msg}}</span>
+    </div> -->
+</div>
+import { Component, OnInit} from '@angular/core';
+import { LoggerService } from '../util/logger.service';
+import { UserService } from './user.service';
+import { User } from './user.type';
+///import { USERS } from './users.mock';
+
+
+@Component({
+  selector: 'app-userlist',
+  templateUrl: './userlist.component.html',
+  styles: [
+  ]
+})
+export class UserlistComponent implements OnInit {
+
+  //users:Array<User> = USERS
+  users!: Array<User>
+  //Dependency Injection
+
+  constructor(private userService: UserService, public logger: LoggerService) { }
+
+  ngOnInit(): void {
+    //here we need to call services 
+    this.users = this.userService.getUsers()
+  }
+  getUser(user:User){
+    console.log('user list',user)
+  }
+
+
+}
+...
+
+<ul class="users">
+    <li *ngFor="let user of users">
+        <button [class.selected]="user===selectedUser"   (click)="onSelect(user)">
+            <span class="badge">{{user.id}}</span>
+            <span class="name">{{user.name}}</span>
+        </button>
+    </li>
+</ul>
+<hr>
+<div *ngIf="selectedUser;else default">
+    <h2>{{selectedUser.name}} details</h2>
+    <div>id : {{selectedUser.id}}</div>
+</div>
+<!-- ng-template is built in element used as fallback in if condition -->
+<!-- # template reference variable -->
+<ng-template #default >
+    <h2>Your Name</h2>
+    <div>id : 0</div>
+</ng-template>
+<hr>
+<app-userform (onSendRequest)="getUser($event)"></app-userform>
+...
+import { Component, Input, OnInit, Output,EventEmitter } from '@angular/core';
+import { User } from './user.type';
+
+@Component({
+  selector: 'app-usersdetails',
+  templateUrl: './usersdetails.component.html',
+  styleUrls: ['./users.component.css']
+})
+export class UsersdetailsComponent implements OnInit {
+
+  @Input()
+  users!: Array<User>
+  //selected user
+  selectedUser!: User
+  
+  @Output()
+  onSendRequest = new EventEmitter<User>()
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+  //Listener method
+  onSelect(user: User) {
+    console.log(user)
+    this.selectedUser = user
+  }
+  getUser(user: User) {
+     this.onSendRequest.emit(user)
+  }
+
+}
+..
+<div class="container">
+    <h3>Sign In</h3>
+    <div>
+        <p>{{user.id}} {{user.name}}</p>
+    </div>
+    <form #userForm="ngForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="id">Id</label>
+            <input type="number" #idErrorMsg="ngModel" [(ngModel)]="user.id" name="id" class="form-control" id="id"
+                required>
+        </div>
+        <!-- Attribute Binding : Binding html attributes dynamically -->
+        <!-- <div [hidden]="boolean"> </div> -->
+        <div [hidden]="idErrorMsg.valid || idErrorMsg.pristine" class="alert alert-danger">
+            Id is required
+        </div>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" #nameErroMsg="ngModel" [(ngModel)]="user.name" name="name" class="form-control" id="name" required>
+        </div>
+        <div [hidden]="nameErroMsg.valid || nameErroMsg.pristine" class="alert alert-danger">
+            Name is required
+        </div>
+        <button type="submit" [disabled]="!userForm.form.valid" class="btn btn-success">Submit</button>
+    </form>
+</div>
+...
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { UserModel } from './user.model';
+import { User } from './user.type';
+
+@Component({
+  selector: 'app-userform',
+  templateUrl: './userform.component.html',
+  styles: [
+  ]
+})
+export class UserformComponent implements OnInit {
+  user = new UserModel(100, "Default")
+  //create CustomEvent Emitter Object
+  @Output()
+  onSendRequest = new EventEmitter<User>()
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+  onSubmit() {
+    //broadcast data to the parent
+    this.onSendRequest.emit(this.user)
+    console.log(this.user)
+    this.user = new UserModel(100, "Default")
+  }
+
+}
+..................................................................................
+			  Service Layer
+..................................................................................
+
+Types of services
+
+1.sync service
+    which blocks the current thread, ui will be freezed until you get the data.
+  //api 
+    public getUsers(): Array<User> {
+        this.logger.add("User Service: fetched Users ")
+        return USERS
+    }
+2.async service
+    which never blocks the current thread, ui can continue working......
+
+async service implmentations in js:
+...................................
+Core Patterns:
+
+1.callback based 
+2.promise based
+3.promise with async ...await
+
+Advanced Patterns
+1.Generators
+2.Reactive Programming -Rx - rxjs - lib for advanced async programming
+
+Rxjs :
+ The angular uses rxjs lib for implmenting advanced aync operations.
+
+Rxjs is async and streaming lib for returning,processing data....
+
+Rxjs = {async + stream }
+
+Rxjs core concepts:
+
+1.Observable - one to one, one to many  
+2.Subjects - one to many
+  Objects used to stream data
+3.Operators
+   Operators are used to create,process,transform the data pipe lines
+
+Applications of rxjs in Angular:
+
+1.HTTP libs
+2.Routing
+3.EventEmitter
+4.Forms
+etc....
+....................................................................................
+			  Http Programming in Angular
+...................................................................................
+				HTTP Programming using Rxjs
+.....................................................................................
+
+Most of the front end applications need to communicate with a server over the HTTP protocal to download and upload data and access the back end services.
+
+Angular provides a client HTTP APi called "HttpClient" built in service class.
+
+HttpClient service class has been listed in the module "@angular/common/http"  HttpClientModule.
+
+This has to be injected into the module where you need to interact with http service.
+
+
+Steps:
+
+1.server rest api
+  -java
+  -c#
+  -python
+  -php
+  -node
+
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { LoggerService } from "../util/logger.service";
+import { User } from "./user.type";
+import { USERS } from './users.mock';
+
+@Injectable({
+    providedIn: 'root' // Use root injector to create this instance...
+})
+export class UserService {
+    constructor(private logger: LoggerService, private http: HttpClient) { }
+    //api 
+    public getUsers_(): Array<User> {
+        this.logger.add("User Service: fetched Users ")
+        return USERS
+    }
+    //
+    public getUsers():Observable<Array<User>> {
+        const url = 'http://localhost:3000/users'
+        return this.http.get<User[]>(url)
+    }
+}
+import { Component, OnInit } from '@angular/core';
+import { LoggerService } from '../util/logger.service';
+import { UserService } from './user.service';
+import { User } from './user.type';
+///import { USERS } from './users.mock';
+
+
+@Component({
+  selector: 'app-userlist',
+  templateUrl: './userlist.component.html',
+  styles: [
+  ]
+})
+export class UserlistComponent implements OnInit {
+
+  //users:Array<User> = USERS
+  users!: Array<User>
+  //Dependency Injection
+
+  constructor(private userService: UserService, public logger: LoggerService) { }
+
+  ngOnInit(): void {
+    //here we need to call services 
+    //this.users = this.userService.getUsers()
+    this.userService.getUsers().subscribe({
+      next: (users: Array<User>) => {
+        this.users = users;
+      }
+    })
+  }
+  getUser(user: User) {
+    console.log('user list', user)
+  }
+
+}
+.....................................................................................
+			Data Formating - Pipes
+.....................................................................................
+.....................................................................................
+				Data Formating -Pipes
+....................................................................................
+
+What is pipe?
+ pipe object used for data formating.
+
+eg:
+ show uppercase
+ show money values - $,#,
+ show date format  - 1/10/2021 , feb 10 2021...
+ custom formates
+
+Angular provides lot of built in pipes, you can write your own pipes as well.
+....
+Syntax:
+  some data | nameof the pipe.
+
+Pipe with Input :
+  some data | nameof the pipe:input
+
+Builtin pipes:
+
+DatePipe: Formats a date value according to locale rules.
+
+UpperCasePipe: Transforms text to all upper case.
+
+LowerCasePipe: Transforms text to all lower case.
+
+CurrencyPipe: Transforms a number to a currency string, formatted according to locale rules.
+
+DecimalPipe: Transforms a number into a string with a decimal point, formatted according to locale rules.
+
+PercentPipe: Transforms a number to a percentage string, formatted according to locale rules.
+
+asyncPipe : to bind list of values async
+   - used to bind observables directly.
+
+
+Basic Pipe:
+<div *ngIf="selectedUser;else default">
+    <h2>{{selectedUser.name | uppercase}} details</h2>
+    <div>id : {{selectedUser.id}}</div>
+</div>
+
+Async Pipe :
+ Used to replace subscribe method in the subscriber 
+
+Without async Pipe:
+
+users!: Array<User>
+
+  this.userService.getUsers().subscribe({
+      next: (users: Array<User>) => {
+        this.users = users;
+      }
+    })
+
+.....
+
+With async pipe:
+
+  @Input()
+// users!: Array<User>
+users!: Observable<Array<User>>
+
+<ul class="users">
+    <li *ngFor="let user of users | async">
+        <button [class.selected]="user===selectedUser"   (click)="onSelect(user)">
+            <span class="badge">{{user.id}}</span>
+            <span class="name">{{user.name}}</span>
+        </button>
+    </li>
+</ul>
+.................................................................................
+			How to Post Data
+................................................................................
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { LoggerService } from "../util/logger.service";
+import { User } from "./user.type";
+import { USERS } from './users.mock';
+
+@Injectable({
+    providedIn: 'root' // Use root injector to create this instance...
+})
+export class UserService {
+    url = 'http://localhost:3000'
+    httpOptions = {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    }
+    constructor(private logger: LoggerService, private http: HttpClient) { }
+    //api 
+    public getUsers_(): Array<User> {
+        this.logger.add("User Service: fetched Users ")
+        return USERS
+    }
+    //
+    public getUsers(): Observable<Array<User>> {
+        return this.http.get<User[]>(`${this.url}/users`)
+    }
+    //save api
+    public save(user: User): Observable<User> {
+        console.log('inside save', user)
+        return this.http.post<User>(`${this.url}/users`, user, this.httpOptions)
+    }
+
+}
+...................................................................................
+			How to handle http errors
+..................................................................................
+
+Rxjs Operators:
+Error Handling operators
+
+1.catchError
+
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable, catchError, of } from "rxjs";
+import { LoggerService } from "../util/logger.service";
+import { User } from "./user.type";
+import { USERS } from './users.mock';
+
+@Injectable({
+    providedIn: 'root' // Use root injector to create this instance...
+})
+export class UserService {
+    url = 'http://localhost:3000'
+    httpOptions = {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    }
+    constructor(private logger: LoggerService, private http: HttpClient) { }
+    //api 
+    public getUsers_(): Array<User> {
+        this.logger.add("User Service: fetched Users ")
+        return USERS
+    }
+    //
+    public getUsers(): Observable<Array<User>> {
+        //pipe method which is going to have list of rx  operators
+        return this.http.get<User[]>(`${this.url}/users`).pipe(
+            catchError(err => of([{ id: 0, name: 'default' }]))
+        )
+    }
+    //save api
+    public save(user: User): Observable<User> {
+        console.log('inside save', user)
+        return this.http.post<User>(`${this.url}/users`, user, this.httpOptions).pipe(
+            catchError(err => of({ id: 0, name: 'default' }))
+        )
+    }
+
+}
+.....................................................................................
+				Menu Driven App -SPA
+....................................................................................
+				 Routing
+....................................................................................
+
+Routing is a concept through which we can build an called Single Page Web App.
+
+We have lot of web apps
+
+1.static web app
+2.dynamic web app
+3.web services - soap,restfull
+4.spa
+
+SPA core concepts:
+
+spa is built using "js,css,html5"
+
+js offers browser apis
+-location
+-history
+ objects are used to implement navigation
+
+if you want to build spa using frameworks like angular , angular offers a separate module called "RouterModule"
+
+1.page
+  1.physical page - html page/static - index.html
+  2.virtual page - the page created onfly and inserted into pysical page- 
+
+components/views
+
+index.html
+
+ <body>
+    <app-root></app-root>
+ </body>
+
+
+without spa
+
+ <body>
+    <app-root>
+		<app-users>
+    </app-root>
+ </body>
+
+
+
+with spa
+
+ <body>
+    <app-root>
+         <navigation>
+         <page>
+    </app-root>
+ </body>
+
+navigation would html hyper links - menus
+page is component to be rendered based on menuitem
+.....................................................................................
+
+Steps:
+
+1.RouterModule:
+ 
+Routing Design:
+
+1.Global /Application Level Routing
+  appRouting
+2.Module Level Routing
+
+
+app.routing.module.ts
+
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+
+//routing rules: routing configuration/
+//when i click particular menu, which compoent should be displayed
+const routes: Routes = [];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+
+....................................................................................
+Common Objects In the Routing Module/Routing:
+
+1.RouterModule
+  To define route configuration
+
+Directives:
+2.RouterOutlet 
+	Acts as a placeholder that Angular dynamically fills based on the current router state.
+   <router-outlet>
+
+3.RouterLink And RouterLinkActive
+   RouterLink is directive to replace href .
+
+Flow of App:
+
+Modules:
+
+E:\session\IBM\2022\sep\ng-session\routingapp>ng g m home --module=app
+CREATE src/app/home/home.module.ts (190 bytes)
+UPDATE src/app/app.module.ts (458 bytes)
+
+E:\session\IBM\2022\sep\ng-session\routingapp>ng g m contact --module=app
+CREATE src/app/contact/contact.module.ts (193 bytes)
+UPDATE src/app/app.module.ts (535 bytes)
+
+Components:
+E:\session\IBM\2022\sep\ng-session\routingapp>ng g c home/home --flat --inline-style --export  --module=home --skip-tests
+CREATE src/app/home/home.component.html (19 bytes)
+CREATE src/app/home/home.component.ts (245 bytes)
+UPDATE src/app/home/home.module.ts (297 bytes)
+
+E:\session\IBM\2022\sep\ng-session\routingapp>ng g c contact/contact --flat --inline-style --export  --module=contact --skip-tests
+CREATE src/app/contact/contact.component.html (22 bytes)
+CREATE src/app/contact/contact.component.ts (254 bytes)
+UPDATE src/app/contact/contact.module.ts (312 bytes) 
+
+
+Rendering:
+<div class="container">
+    <h1 class="text-center">Routing App</h1>
+    <hr>
+    <app-home></app-home>
+    <app-contact></app-contact>
+ 
+</div>
+..................................................................................
+			  How to display view based on navigation.
+
+
+Routing Configuration:
+ -AppModule level
+ -SubModule level
+
+
+app.routing.module.ts
+
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { ContactComponent } from './contact/contact.component';
+import { HomeComponent } from './home/home.component';
+
+//routing rules: routing configuration/
+//when i click particular menu, which compoent should be displayed
+const routes: Routes = [
+  {
+    path: '', component: HomeComponent
+  },
+  {
+    path: 'contact', component: ContactComponent
+  }
+
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+
+........................................................................
+
+More Menu Configuration:
+<div class="container">
+    <h1 class="text-center">Routing App</h1>
+    <hr>
+    <!-- Traditionally displayed -->
+    <!-- <app-home></app-home>
+    <app-contact></app-contact> -->
+    <!-- With routing -->
+    <nav>
+        <ul>
+            <li><a routerLinkActive="active" routerLink="contact">Contact</a></li>
+            <li><a routerLinkActive="active" routerLink="users">Users</a></li>
+        </ul>
+    </nav>
+    <hr>
+    <router-outlet></router-outlet>
+
+</div>
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { ContactComponent } from './contact/contact.component';
+import { HomeComponent } from './home/home.component';
+import { UserlistComponent } from './users/userlist.component';
+
+//routing rules: routing configuration/
+//when i click particular menu, which compoent should be displayed
+const routes: Routes = [
+  {
+    path: '', component: HomeComponent
+  },
+  {
+    path: 'contact', component: ContactComponent
+  },
+  {
+    path: 'users', component: UserlistComponent
+  }
+
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+....................................................................................
+			  Page Not Found - 404
+..................................................................................
+E:\session\IBM\2022\sep\ng-session\routingapp>ng g c pagenotfound --flat --inline-style --export  --module=app --skip-tests
+CREATE src/app/pagenotfound.component.html (27 bytes)
+CREATE src/app/pagenotfound.component.ts (269 bytes)
+UPDATE src/app/app.module.ts (741 bytes)
+
+
+ {
+    path: '**', component: PagenotfoundComponent
+  }
+....................................................................................
+			Redirection
+...................................................................................
+
+For multi url pattern we can map single component
+
+eg/
+ Component: MyComponent
+
+/foo - MyComponent
+/bar->MyComponent
+/ -->MyComponent
+
+{path: 'mycmp' component:MyComponent}
+
+{path :'/foo' redirect:'/mycmp' pathMatch:'full'}
+
+
+const routes: Routes = [
+  {
+    path: 'home', component: HomeComponent
+  },
+  {
+    path: 'contact', component: ContactComponent
+  },
+  {
+    path: 'users', component: UserlistComponent
+  },
+  {
+    path: '', redirectTo: '/home', pathMatch: 'full'
+  },
+  {
+    path: 'yourhome', redirectTo: '/home', pathMatch: 'full'
+  },
+  {
+    path: '**', component: PagenotfoundComponent
+  }
+
+];
+
+
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { ContactComponent } from './contact/contact.component';
+import { HomeComponent } from './home/home.component';
+
+const routes: Routes = [
+  //index path 
+  {
+    path: '', redirectTo: '/home', pathMatch: 'full'
+  },
+  {
+    path: 'home', component: HomeComponent
+  },
+  {
+    path: 'contact', component: ContactComponent
+  },
+  {
+    path: '**', redirectTo: '/home', pathMatch: 'full'
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+
+....................................................................................
+				Master detail Navigation
+....................................................................................
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
+import { Observable } from 'rxjs';
+import { Customer } from './customer.type';
+import { CustomersService } from './customers.service';
+
+@Component({
+  selector: 'app-customerdetail',
+  templateUrl: './customerdetail.component.html',
+  styles: [
+  ]
+})
+export class CustomerdetailComponent implements OnInit {
+  id!: string
+  customer!: Customer
+  constructor(private route: ActivatedRoute, private customerService: CustomersService ,public location:Location) { }
+
+  ngOnInit(): void {
+    this.route.params.subscribe({
+      next: params => {
+        console.log(params['id'])
+        this.id = params['id']
+        this.customerService.getCustomer(+this.id).subscribe(customer => {
+          this.customer = customer
+        })
+      }
+    })
+  }
+
+}
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable, catchError, of } from "rxjs";
+import { Customer } from "./customer.type";
+
+@Injectable({
+  providedIn: 'root'
+})
+export class CustomersService {
+
+  url = 'http://localhost:3000'
+  httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  }
+  constructor(private http: HttpClient) { }
+
+  public getCustomers(): Observable<Array<Customer>> {
+    //pipe method which is going to have list of rx  operators
+    return this.http.get<Customer[]>(`${this.url}/customers`).pipe(
+      catchError(err => of([{ id: 0, name: 'default' }]))
+    )
+  }
+  public getCustomer(id: number): Observable<Customer> {
+    //pipe method which is going to have list of rx  operators
+    return this.http.get<Customer>(`${this.url}/customers/${id}`).pipe(
+      catchError(err => of({ id: 0, name: 'default' }))
+    )
+  }
+
+}
+
+
+
+
+
+
 
 
 

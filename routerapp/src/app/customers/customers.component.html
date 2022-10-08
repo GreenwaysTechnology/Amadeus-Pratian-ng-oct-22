@@ -1,0 +1,7 @@
+<ul>
+    <ul *ngFor="let customer of customers$ | async">
+        <a routerLink="./{{customer.id}}">
+            <span>{{customer.name}}</span>
+        </a>
+    </ul>
+</ul>

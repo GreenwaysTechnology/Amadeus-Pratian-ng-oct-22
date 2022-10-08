@@ -1,0 +1,21 @@
+<ul class="users">
+    <li *ngFor="let user of users | async">
+        <button [class.selected]="user===selectedUser"   (click)="onSelect(user)">
+            <span class="badge">{{user.id}}</span>
+            <span class="name">{{user.name}}</span>
+        </button>
+    </li>
+</ul>
+<hr>
+<div *ngIf="selectedUser;else default">
+    <h2>{{selectedUser.name | uppercase}} details</h2>
+    <div>id : {{selectedUser.id}}</div>
+</div>
+<!-- ng-template is built in element used as fallback in if condition -->
+<!-- # template reference variable -->
+<ng-template #default >
+    <h2>Your Name</h2>
+    <div>id : 0</div>
+</ng-template>
+<hr>
+<app-userform (onSendRequest)="getUser($event)"></app-userform>

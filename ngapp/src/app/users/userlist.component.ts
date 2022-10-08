@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { LoggerService } from '../util/logger.service';
 import { UserService } from './user.service';
 import { User } from './user.type';
@@ -16,11 +17,24 @@ export class UserlistComponent implements OnInit {
   //users:Array<User> = USERS
   users!: Array<User>
   //Dependency Injection
-  constructor(private userService: UserService,public logger:LoggerService) { }
+  users$!: Observable<Array<User>>
+
+  constructor(private userService: UserService, public logger: LoggerService) { }
 
   ngOnInit(): void {
     //here we need to call services 
-    this.users = this.userService.getUsers()
+    //this.users = this.userService.getUsers()
+    this.userService.getUsers().subscribe({
+      next: (users: Array<User>) => {
+        this.users = users;
+      }
+    })
+    this.users$ = this.userService.getUsers()
   }
+  getUser(user: User) {
+    //send data to the service
+    this.userService.save(user)
+  }
+
 
 }
